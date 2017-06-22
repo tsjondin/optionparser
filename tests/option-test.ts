@@ -39,12 +39,13 @@ export class FlagOptionTester {
 
   }
 
-  @test "given callback to setting it is invoked when running get_value"
+  @test "given callback to setting it is invoked when post processing the option"
   () {
     let option = new StringOption('t', 'test', {
       callback: (value : string) => (value + "-suffixed")
     });
     option.set_value("the-value");
+    option.post_process();
     expect(option.get_value()).to.equal("the-value-suffixed");
   }
 

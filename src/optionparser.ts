@@ -19,6 +19,13 @@ export class OptionInvalidKeyError extends Error {
 	}
 }
 
+export class OptionHelpError extends Error {
+	constructor (message : string) {
+		super(message);
+		Object.setPrototypeOf(this, OptionHelpError.prototype);
+	}
+}
+
 export class OptionParser {
 
 	private options : Array<OptionInterface> = [];
@@ -35,10 +42,10 @@ export class OptionParser {
 
 		this.add(new FlagOption('h', 'help', {
 			help: 'Shows this help',
-			callback: (value : boolean) : boolean => {
-        this.help();
-        process.exit(1);
-        return value;
+      callback: (value : boolean) : any => {
+        if (value) {
+          throw new OptionHelpError(`Usage: ${this.executable} [options]\n`);
+        }
 			}
 		}));
 
@@ -55,14 +62,6 @@ export class OptionParser {
 		return this;
 	}
 
-	/**
-	 * Writes full help text to STDOUT
-	 */
-	public help () : void {
-		const write = process.stdout.write.bind(process.stdout);
-		write(`Usage: ${this.executable} [options]\n`);
-	}
-
   public get_parameters () : Array<string | undefined> {
     return this.parameters;
   }
@@ -71,7 +70,7 @@ export class OptionParser {
 	 * Minimal highly context-full recursive descent parser for command-line
 	 * arguments and options
 	 */
-	public parse (args : Array<string> = process.argv) : object {
+  public parse (args : Array<string> = process.argv) : {[index:string] : OptionInterface} {
 
 		const MATCH_KEY : RegExp = /^(\-\-|\-)(.+)/;
 
@@ -82,8 +81,8 @@ export class OptionParser {
 
 			if (input && (match = input.match(MATCH_KEY))) {
 				let option = this.get(match[2]);
-				if (option && !option.requires_value) {
-					option.set_value('noop');
+        if (option && !option.requires_value) {
+          option.set_value('noop');
 					return accept_key;
 				} else if (!option) {
 					throw new OptionInvalidKeyError(
@@ -138,7 +137,8 @@ export class OptionParser {
 			accept = accept(args);
 		}
 
-		return this.options.reduce((result : {[index : string] : OptionInterface}, option : OptionInterface) => {
+    return this.options.reduce((result : {[index : string] : OptionInterface}, option : OptionInterface) => {
+      option.post_process();
 			result[option.get_name()] = option;
 			return result;
 		}, {});

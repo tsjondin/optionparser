@@ -7,6 +7,7 @@ import {expect} from 'chai';
 import {
   OptionParser,
   OptionInvalidKeyError,
+  OptionHelpError,
   StringOption,
   FlagOption,
   ListOption
@@ -66,6 +67,15 @@ export class ParserTester {
 
     const options : any = parser.parse(['bin', 'test']);
     expect(Object.keys(options)).to.include.members(['string', 'flag', 'list']);
+
+  }
+
+  @test "Running with --help/-h option should throw an error containing help text" () {
+
+    const parser = new OptionParser("Help error test");
+
+    expect(parser.parse.bind(parser, ["bin", "test", "--help", "-h"]))
+      .to.throw(OptionHelpError);
 
   }
 

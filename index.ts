@@ -1,7 +1,7 @@
 "use strict";
 
 /* Parser */
-export {OptionParser, OptionMissingArgumentError, OptionInvalidKeyError} from "./src/optionparser";
+export {OptionParser, OptionHelpError, OptionMissingArgumentError, OptionInvalidKeyError} from "./src/optionparser";
 
 /* Options */
 export {FlagOption} from "./src/options";
