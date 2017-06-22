@@ -23,6 +23,7 @@ export class OptionParser {
 
 	private options : Array<OptionInterface> = [];
 	private description : string = "";
+  private parameters : Array<string | undefined> = [];
 
 	private executable : string | undefined;
 	private bin : string | undefined;
@@ -62,6 +63,10 @@ export class OptionParser {
 		write(`Usage: ${this.executable} [options]\n`);
 	}
 
+  public get_parameters () : Array<string | undefined> {
+    return this.parameters;
+  }
+
 	/**
 	 * Minimal highly context-full recursive descent parser for command-line
 	 * arguments and options
@@ -69,7 +74,6 @@ export class OptionParser {
 	public parse (args : Array<string> = process.argv) : object {
 
 		const MATCH_KEY : RegExp = /^(\-\-|\-)(.+)/;
-		let parameters : Array<string | undefined> = [];
 
 		const accept_key = (stream : Array<string>) : Function => {
 
@@ -94,11 +98,11 @@ export class OptionParser {
 			/**
 			 * Short-circuit parser and expect that trailing arguments are raw data
 			 * and not options.
-			 */
-			parameters.push(input);
-			while (stream.length > 0) {
-				parameters.push(stream.shift());
-			}
+       */
+      this.parameters.push(input);
+      while (stream.length > 0) {
+        this.parameters.push(stream.shift());
+      }
 			return accept_key;
 
 		}

@@ -12,16 +12,6 @@ import {
   ListOption
 } from "../index";
 
-/*
-function parser_result_provider () {
-  return [
-    [
-      new FlagOption(),
-      new StringOption()
-    ]
-  ];
-}*/
-
 @suite("Test OptionParser")
 export class ParserTester {
 
@@ -46,6 +36,15 @@ export class ParserTester {
 
     const options : any = parser.parse(['bin', 'test']);
     expect(Object.keys(options)).to.include.members(["foobar"]);
+
+  }
+
+  @test "Leftover arguments are treated as parameters"
+  () {
+
+    const parser = new OptionParser("Parameter Test");
+    parser.parse(['bin', 'test', 'param1', 'param2']);
+    expect(parser.get_parameters()).to.deep.equal(['param1', 'param2']);
 
   }
 
@@ -78,21 +77,6 @@ export class ParserTester {
       .to.throw(OptionInvalidKeyError);
 
   }
-
-
-    /*
-  @provider(parser_result_provider)
-  @test "Options are correctly parsed from arguments"
-  (shortopt : string, longopt : string, cli : string, value : any) {
-
-    const parser = new OptionParser("FlagOption Test",
-      new FlagOption(shortopt, longopt)
-    );
-
-    const options : any = parser.parse(['bin', 'test', cli]);
-    expect(options.test.get_value()).to.equal(value);
-
-  }*/
 
 }
 
