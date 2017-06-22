@@ -11,6 +11,7 @@ export interface OptionInterface {
     readonly requires_value : boolean;
     set_value (value : string) : void;
     get_name () : string;
+    get_help () : string;
     matches (key : string) : boolean;
 }
 

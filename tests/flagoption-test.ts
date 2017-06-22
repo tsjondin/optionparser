@@ -33,16 +33,5 @@ export class FlagOptionTester {
 
   }
 
-  @test "Missing flag option results in 'undefined'" () {
-
-    const parser = new OptionParser("FlagOption Test",
-      new FlagOption('t', 'test')
-    );
-
-    const options : any = parser.parse(['bin', 'test']);
-    expect(options.test.get_value()).to.equal(undefined);
-
-  }
-
 }
 
