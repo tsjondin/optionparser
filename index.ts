@@ -1,15 +1,17 @@
 "use strict";
+
 /* Parser */
 export {OptionParser} from "./src/optionparser";
 export {OptionMissingArgumentError} from "./src/optionparser";
+
 /* Options */
-export {FlagOption} from "./src/option";
-export {IntegerOption} from "./src/option";
-export {NumberOption} from "./src/option";
-export {StringOption} from "./src/option";
-export {ListOption} from "./src/option";
-export {IncrementOption} from "./src/option";
-export {GroupOption} from "./src/option";
+export {FlagOption} from "./src/options";
+export {IntegerOption} from "./src/options";
+export {NumberOption} from "./src/options";
+export {StringOption} from "./src/options";
+export {ListOption} from "./src/options";
+export {IncrementOption} from "./src/options";
+export {GroupOption} from "./src/options";
+
 /* Used when creating new option types */
-export {OptionInterface} from "./src/option";
-export {Option} from "./src/option";
+export {Option, OptionInterface, OptionSettings} from "./src/options";

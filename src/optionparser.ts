@@ -1,10 +1,10 @@
 "use strict";
 
 import {
-	OptionInterface,
+  OptionInterface,
 	GroupOption,
 	FlagOption
-} from "./option";
+} from "./options";
 
 export class OptionMissingArgumentError extends Error {
 	constructor (message : string) {
@@ -35,21 +35,24 @@ export class OptionParser {
 
 		this.add(new FlagOption('h', 'help', {
 			help: 'Shows this help',
-			callback: () => {
-				this.help();
+			callback: (value : boolean) : boolean => {
+        this.help();
+        return value;
 			}
 		}));
 
 	}
 
 	private get (key: string) : OptionInterface | undefined {
-		let opt : OptionInterface | undefined = this.options.find((option : OptionInterface) : boolean => {
-			return option.matches(key);
-		});
-		if (opt instanceof GroupOption) {
-			return opt.get(key);
+
+    let option : OptionInterface | undefined;
+    option = this.options.find((O : OptionInterface) : boolean => O.matches(key));
+
+		if (option instanceof GroupOption) {
+			return option.get(key);
 		}
-		return opt;
+    return option;
+
 	}
 
 	public add (option : OptionInterface) {
@@ -84,7 +87,7 @@ export class OptionParser {
 			if (input && (match = input.match(MATCH_KEY))) {
 				let option = this.get(match[2]);
 				if (option && !option.requires_value) {
-					option.set_value(undefined);
+					option.set_value('noop');
 					return accept_key;
 				} else if (!option) {
 					throw new OptionInvalidKeyError(
@@ -139,8 +142,8 @@ export class OptionParser {
 			accept = accept(args);
 		}
 
-		return this.options.reduce((result : any, option : OptionInterface) => {
-			result[option.get_name()] = option.get_value();
+		return this.options.reduce((result : {[index : string] : OptionInterface}, option : OptionInterface) => {
+			result[option.get_name()] = option;
 			return result;
 		}, {});
 
