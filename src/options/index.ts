@@ -6,5 +6,4 @@ export {IntegerOption} from './integeroption';
 export {NumberOption} from './numberoption';
 export {StringOption} from './stringoption';
 export {ListOption} from './listoption';
-export {GroupOption} from './groupoption';
 export {IncrementOption} from './incrementoption';

@@ -2,7 +2,6 @@
 
 import {
   OptionInterface,
-	GroupOption,
 	FlagOption
 } from "./options";
 
@@ -37,6 +36,7 @@ export class OptionParser {
 			help: 'Shows this help',
 			callback: (value : boolean) : boolean => {
         this.help();
+        process.exit(1);
         return value;
 			}
 		}));
@@ -44,15 +44,9 @@ export class OptionParser {
 	}
 
 	private get (key: string) : OptionInterface | undefined {
-
-    let option : OptionInterface | undefined;
-    option = this.options.find((O : OptionInterface) : boolean => O.matches(key));
-
-		if (option instanceof GroupOption) {
-			return option.get(key);
-		}
-    return option;
-
+    return this.options.find(
+      (option : OptionInterface) : boolean => option.matches(key)
+    );
 	}
 
 	public add (option : OptionInterface) {
@@ -66,8 +60,6 @@ export class OptionParser {
 	public help () : void {
 		const write = process.stdout.write.bind(process.stdout);
 		write(`Usage: ${this.executable} [options]\n`);
-		// this.groups.forEach((group : GroupOption) => group.render());
-		process.exit(1);
 	}
 
 	/**

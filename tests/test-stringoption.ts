@@ -45,4 +45,26 @@ export class StringOptionTester {
 
   }
 
+  @test "Missing string option results in 'undefined'" () {
+
+    const parser = new OptionParser("StringOption Test",
+      new StringOption("t", "test")
+    );
+
+    const options : any = parser.parse(["bin", "test"]);
+    expect(options.test.get_value()).to.equal(undefined);
+
+  }
+
+  @test "Missing string option with 'default' setting set results in default" () {
+
+    const parser = new OptionParser("StringOption Test",
+      new StringOption("t", "test", {default: "No such value set"})
+    );
+
+    const options : any = parser.parse(["bin", "test"]);
+    expect(options.test.get_value()).to.equal("No such value set");
+
+  }
+
 }

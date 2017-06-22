@@ -11,7 +11,6 @@ export {NumberOption} from "./src/options";
 export {StringOption} from "./src/options";
 export {ListOption} from "./src/options";
 export {IncrementOption} from "./src/options";
-export {GroupOption} from "./src/options";
 
 /* Used when creating new option types */
 export {Option, OptionInterface, OptionSettings} from "./src/options";

@@ -32,10 +32,17 @@ export abstract class Option<Type> {
   public abstract set_value (value : string) : void;
 
   public get_value () : Type | undefined {
+
+    if (this.settings.default != undefined && this.value === undefined) {
+      return this.settings.default;
+    }
+
     if (this.settings.callback) {
       return this.settings.callback.call(this, this.value);
     }
+
     return this.value
+
   }
 
   public get_shortopt () : string {
