@@ -1,2 +1,1 @@
-# optionparser
-Parses command line options
+# OptionParser - Parses command line options

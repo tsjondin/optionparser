@@ -7,21 +7,27 @@ import {
 
 export class OptionMissingArgumentError extends Error {
 	constructor (message : string) {
-		super(message);
+    /* istanbul ignore next */
+		super();
+    this.message = message;
 		Object.setPrototypeOf(this, OptionMissingArgumentError.prototype);
 	}
 }
 
 export class OptionInvalidKeyError extends Error {
 	constructor (message : string) {
-		super(message);
+    /* istanbul ignore next */
+    super();
+    this.message = message;
 		Object.setPrototypeOf(this, OptionInvalidKeyError.prototype);
 	}
 }
 
 export class OptionHelpError extends Error {
 	constructor (message : string) {
-		super(message);
+    /* istanbul ignore next */
+    super();
+    this.message = message;
 		Object.setPrototypeOf(this, OptionHelpError.prototype);
 	}
 }
@@ -32,8 +38,8 @@ export class OptionParser {
 	private description : string = "";
   private parameters : Array<string | undefined> = [];
 
-	private executable : string | undefined;
-	private bin : string | undefined;
+	public executable : string | undefined;
+	public bin : string | undefined;
 
 	constructor (description : string, ...options : Array<OptionInterface>) {
 
@@ -51,10 +57,21 @@ export class OptionParser {
 
 	}
 
-	private get (key: string) : OptionInterface | undefined {
-    return this.options.find(
+	private get (key: string) : OptionInterface {
+
+    let option : OptionInterface | undefined = this.options.find(
       (option : OptionInterface) : boolean => option.matches(key)
     );
+
+    if (!option) {
+      throw new OptionInvalidKeyError(
+        `${this.executable}: invalid option -- '${key}'\n` +
+        `Try '${this.executable} --help' for more information\n`
+      );
+    }
+
+    return option;
+
 	}
 
 	public add (option : OptionInterface) {
@@ -70,7 +87,7 @@ export class OptionParser {
 	 * Minimal highly context-full recursive descent parser for command-line
 	 * arguments and options
 	 */
-  public parse (args : Array<string> = process.argv) : {[index:string] : OptionInterface} {
+  public parse (args : Array<string>) : {[index:string] : OptionInterface} {
 
 		const MATCH_KEY : RegExp = /^(\-\-|\-)(.+)/;
 
@@ -81,14 +98,9 @@ export class OptionParser {
 
 			if (input && (match = input.match(MATCH_KEY))) {
 				let option = this.get(match[2]);
-        if (option && !option.requires_value) {
+        if (!option.requires_value) {
           option.set_value('noop');
 					return accept_key;
-				} else if (!option) {
-					throw new OptionInvalidKeyError(
-						`${this.executable}: invalid option -- '${match[2]}'\n` +
-						`Try '${this.executable} --help' for more information\n`
-					);
 				} else {
 					return accept_value(match[2], stream);
 				}
@@ -112,10 +124,8 @@ export class OptionParser {
 
 			if (input && !input.match(MATCH_KEY)) {
 				let option = this.get(key);
-				if (option) {
-					option.set_value(input);
-					return accept_key;
-				}
+        option.set_value(input);
+        return accept_key;
 			}
 
 			throw new OptionMissingArgumentError(
